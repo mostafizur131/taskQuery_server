@@ -24,6 +24,7 @@ async function run() {
   try {
     const db = client.db("taskQueryDB");
     const usersCollection = db.collection("users");
+    const tasksCollection = db.collection("tasks");
 
     //Save user With JWT authentication
     app.put("/user/:email", async (req, res) => {
@@ -45,6 +46,13 @@ async function run() {
       const token = jwt.sign(user, process.env.ACCESS_KEY, { expiresIn: "1d" });
 
       res.send({ result, token });
+    });
+
+    // Save Task
+    app.post("/tasks", async (req, res) => {
+      const task = req.body;
+      const result = await tasksCollection.insertOne(task);
+      res.send(result);
     });
   } finally {
   }
